@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+<style>
+    #nowplaying {
+        margin: 1em 2em;
+        background: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        font-family: arial, sans-serif;
+        padding: 1em;
+        border-radius: 5px;
+        max-width: 300px;
+        transition: 2s opacity;
+    }
+    #nowplaying-title {
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-bottom: .2em;
+    }
+    .hidden {
+        opacity: 0;
+    }
+</style>
+	</head>
+	<body>
+		<div id="nowplaying" class="hidden">
+            <div id="nowplaying-title">&nbsp;</div>
+			<div id="nowplaying-artist">&nbsp;</div>
+		<div>
+	</body>
+	<script>
+
+        $nowplaying = document.getElementById("nowplaying")
+        $title = document.getElementById("nowplaying-title")
+        $artist = document.getElementById("nowplaying-artist")
+
+        currentTitle = undefined
+        showTime = 3
+        shown = 0
+
+
+        function load_metadata() {
+            fetch("./meta.json")
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => paint(data))
+        }
+
+        function paint(data) {
+            if (currentTitle != data.title) {
+                currentTitle = data.title;
+                $title.innerHTML = data.title
+                $artist.innerHTML = data.artist
+                $nowplaying.classList.remove('hidden')                 
+                shown = 0;
+            }
+
+            if (shown >= showTime) {
+                $nowplaying.classList.add('hidden')                 
+            }
+            else {
+                shown++;
+            }
+                     
+        }
+
+        load_metadata();
+
+        setInterval(load_metadata, 2000);
+	</script>
+</html>
+
